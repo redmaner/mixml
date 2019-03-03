@@ -28,7 +28,7 @@ func (res *Resources) Load() {
 		str := sc.Text()
 
 		// If a string item has trash in it, we skip the line
-		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") {
+		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") || strings.Contains(str, "<!--") {
 			continue
 		}
 
