@@ -47,13 +47,13 @@ func (res *Resources) Load() {
 	// This way we remove double string items.
 	for _, v := range stringEntries {
 		if ok, val := ParseItem(v, res.Format, res.ASCIIOnly); ok {
-			res.Items[val.name] = val
+			res.Entries[val.name] = val
 		}
 	}
 
 	// We store xmlKeys in a separte slice and sort it, this way we can rebuild
 	// the file in a ordered way.
-	for k := range res.Items {
+	for k := range res.Entries {
 		res.Keys = append(res.Keys, k)
 	}
 	sort.Strings(res.Keys)

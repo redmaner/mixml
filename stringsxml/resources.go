@@ -4,7 +4,7 @@ package stringsxml
 type Resources struct {
 	FilePath  string
 	Keys      []string
-	Items     map[string]Item
+	Entries   map[string]Entry
 	Format    bool
 	ASCIIOnly bool
 }
@@ -14,7 +14,7 @@ func NewResources(filePath string, format bool, asciiOnly bool) *Resources {
 	return &Resources{
 		FilePath:  filePath,
 		Keys:      []string{},
-		Items:     make(map[string]Item),
+		Entries:   make(map[string]Entry),
 		Format:    format,
 		ASCIIOnly: asciiOnly,
 	}

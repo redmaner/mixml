@@ -34,7 +34,7 @@ func (res *Resources) Write() {
 
 		var formatString string
 		var writeString string
-		stringItem := res.Items[key]
+		stringItem := res.Entries[key]
 
 		if stringItem.formatted {
 			formatString = ` formatted="false"`

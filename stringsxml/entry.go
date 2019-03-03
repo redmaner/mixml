@@ -7,9 +7,9 @@ import (
 	"github.com/redmaner/mixml/utils"
 )
 
-// Item represents a string in Android strings.xml
+// Entry represents a string in Android strings.xml
 // <string name="example" formatted="false">Hello %s, this is an example of %s</string>
-type Item struct {
+type Entry struct {
 	name          string
 	value         string
 	formatted     bool
@@ -18,10 +18,10 @@ type Item struct {
 
 // ParseItem parses a Item from a string. It returns true and the Item if it was able
 // to parse an Item from the string. Otherwise it returns false and an empty item.
-func ParseItem(base string, format bool, asciiOnly bool) (bool, Item) {
+func ParseItem(base string, format bool, asciiOnly bool) (bool, Entry) {
 
 	if base == "" {
-		return false, Item{}
+		return false, Entry{}
 	}
 
 	// Trim spaces
@@ -48,12 +48,12 @@ func ParseItem(base string, format bool, asciiOnly bool) (bool, Item) {
 
 		// If value contains multiple _ and doesn't contain spaces we skip it
 		if strings.Count(value, "_") >= 2 && strings.Count(value, " ") == 0 {
-			return false, Item{}
+			return false, Entry{}
 		}
 
 		// If value contains multiple . and doesn't contain spaces we skip it
 		if strings.Count(value, ".") > 2 && strings.Count(value, " ") == 0 {
-			return false, Item{}
+			return false, Entry{}
 		}
 	}
 
@@ -66,7 +66,7 @@ func ParseItem(base string, format bool, asciiOnly bool) (bool, Item) {
 			testOne, _ := utf8.DecodeRune([]byte{value[0]})
 			testTwo, _ := utf8.DecodeRune([]byte{value[lenValue]})
 			if testOne > 591 && testTwo > 591 {
-				return false, Item{}
+				return false, Entry{}
 			}
 		}
 	}
@@ -83,7 +83,7 @@ func ParseItem(base string, format bool, asciiOnly bool) (bool, Item) {
 		formatted = true
 	}
 
-	return true, Item{
+	return true, Entry{
 		name:          name,
 		value:         value,
 		apostropheFix: apostropheFix,
