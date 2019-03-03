@@ -4,12 +4,14 @@ import (
 	"flag"
 	"fmt"
 	"os"
+	"path"
 	"path/filepath"
 
+	"github.com/redmaner/mixml/arraysxml"
 	"github.com/redmaner/mixml/stringsxml"
 )
 
-const version = "r1"
+const version = "r2"
 
 var (
 	cmdFmt     = flag.Bool("fmt", false, "Format strings.xml in a directory")
@@ -51,7 +53,7 @@ func format(dir string, format bool) {
 	for _, v := range apks {
 		filepath.Walk(v, func(path string, f os.FileInfo, _ error) error {
 			if !f.IsDir() {
-				if f.Name() == "strings.xml" {
+				if f.Name() == "strings.xml" || f.Name() == "arrays.xml" {
 					files = append(files, path)
 				}
 			}
@@ -60,11 +62,22 @@ func format(dir string, format bool) {
 	}
 
 	for _, v := range files {
-		res := stringsxml.NewResources(v, format, *parASCII)
-		res.Load()
-		res.Write()
-		if !*parQuiet {
-			fmt.Printf("Formatted %s\n", v)
+		switch {
+		case path.Base(v) == "strings.xml":
+			res := stringsxml.NewResources(v, format, *parASCII)
+			res.Load()
+			res.Write()
+			if !*parQuiet {
+				fmt.Printf("Formatted %s\n", v)
+			}
+		case path.Base(v) == "arrays.xml":
+			res := arraysxml.NewResources(v, format, *parASCII)
+			res.Load()
+			res.Write()
+			if !*parQuiet {
+				fmt.Printf("Formatted %s\n", v)
+			}
 		}
+
 	}
 }
