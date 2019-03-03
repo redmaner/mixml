@@ -26,6 +26,7 @@ func (res *Resources) Write() {
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
+	defer f.Close()
 
 	io.WriteString(f, fmt.Sprintf("<?xml version='1.0' encoding='UTF-8'?>\n"))
 	io.WriteString(f, fmt.Sprintf("<resources>\n"))

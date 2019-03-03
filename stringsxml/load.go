@@ -16,6 +16,7 @@ func (res *Resources) Load() {
 	if err != nil {
 		log.Fatalf("%v\n", err)
 	}
+	defer f.Close()
 
 	// We scan the file with a bufio.Scanner. Each string item is stored in a slice.
 	sc := bufio.NewScanner(f)
