@@ -25,6 +25,7 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 	}
 
 	var parsedFirstLine bool
+	var strBuffer string
 	var arrayForm string
 	var arrayName string
 	var arrayItems []string
@@ -34,8 +35,6 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 	for sc.Scan() {
 
 		str := sc.Text()
-		str = utils.TrimSpace(str)
-
 		if !parsedFirstLine {
 			parsedFirstLine = true
 
@@ -52,6 +51,7 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 			}
 
 			// Trim prefix and suffix
+			str = utils.TrimSpace(str)
 			str = strings.TrimPrefix(str, fmt.Sprintf(`<%s name="`, arrayForm))
 			str = strings.TrimSuffix(str, `">`)
 			arrayName = str
@@ -63,12 +63,26 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 			continue
 		}
 
-		if strings.Contains(str, "<item>") {
+		if strings.Contains(str, "<item></item>") {
+			arrayItems = append(arrayItems, "")
+			continue
+		}
+
+		if strings.Contains(str, "</item>") {
+			if strBuffer != "" {
+				str = strBuffer + "\n" + str
+			}
+			strBuffer = ""
+			str = utils.TrimSpace(str)
 			str = strings.TrimPrefix(str, "<item>")
 			str = strings.TrimSuffix(str, "</item>")
 			arrayItems = append(arrayItems, str)
+			continue
 		}
-
+		if strBuffer != "" {
+			strBuffer = strBuffer + "\n"
+		}
+		strBuffer = strBuffer + str
 	}
 
 	return true, Entry{
