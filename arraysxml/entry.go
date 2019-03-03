@@ -20,7 +20,13 @@ type Entry struct {
 // to parse an Entry from the string. Otherwise it returns false and an empty item.
 func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 
+	// We do not parse empty strings
 	if base == "" {
+		return false, Entry{}
+	}
+
+	// We remove comments
+	if strings.Contains(base, "<!--") {
 		return false, Entry{}
 	}
 

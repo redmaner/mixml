@@ -28,12 +28,12 @@ func (res *Resources) Load() {
 		str := sc.Text()
 
 		// If a string item has trash in it, we skip the line
-		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") || strings.Contains(str, "<!--") {
+		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") {
 			continue
 		}
 
 		// We want to join strings together <string> </string>
-		if strings.Contains(str, "<string") {
+		if strings.Contains(str, "<string") || strings.Contains(str, "<!--") {
 			stringEntries = append(stringEntries, strPlaceholder)
 			strPlaceholder = ""
 			strPlaceholder = strPlaceholder + str

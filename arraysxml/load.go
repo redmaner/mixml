@@ -28,12 +28,12 @@ func (res *Resources) Load() {
 		str := sc.Text()
 
 		// If an array entry has trash in it, we skip the line
-		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") || strings.Contains(str, "<!--") {
+		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") {
 			continue
 		}
 
 		// We want to join arrays together <array> </array>
-		if strings.Contains(str, "<array") || strings.Contains(str, "<string-array") || strings.Contains(str, "<integer-array") {
+		if strings.Contains(str, "<array") || strings.Contains(str, "<string-array") || strings.Contains(str, "<integer-array") || strings.Contains(str, "<!--") {
 			arrayEntries = append(arrayEntries, strPlaceholder)
 			strPlaceholder = ""
 			strPlaceholder = strPlaceholder + str
