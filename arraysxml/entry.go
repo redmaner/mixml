@@ -55,6 +55,7 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 			str = strings.TrimPrefix(str, fmt.Sprintf(`<%s name="`, arrayForm))
 			str = strings.TrimSuffix(str, `">`)
 			arrayName = str
+			continue
 		}
 
 		// The final line of the string is the closure of the entry.

@@ -11,7 +11,7 @@ import (
 	"github.com/redmaner/mixml/stringsxml"
 )
 
-const version = "r3"
+const version = "r4"
 
 var (
 	cmdFmt     = flag.Bool("fmt", false, "Format strings.xml in a directory")
