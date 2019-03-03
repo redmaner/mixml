@@ -40,7 +40,8 @@ func XMLIntegrity(filePath string) error {
 		// Count the occurence of <string></string> pairs. These should be equal.
 		stringOpenCount := bytes.Count(data, []byte("<string name="))
 		stringCloseCount := bytes.Count(data, []byte("</string>"))
-		stringCloseCount = stringCloseCount + bytes.Count(data, []byte("/>"))
+		stringCloseCount = stringCloseCount + bytes.Count(data, []byte(`"/>`))
+		stringCloseCount = stringCloseCount + bytes.Count(data, []byte(`" />`))
 
 		if stringOpenCount != stringCloseCount {
 			return fmt.Errorf("%s: basic XML integrity check failed (string mismatch)", filePath)
@@ -60,7 +61,8 @@ func XMLIntegrity(filePath string) error {
 		arrayCloseCount := bytes.Count(data, []byte("</array>"))
 		arrayCloseCount = arrayCloseCount + bytes.Count(data, []byte("</string-array>"))
 		arrayCloseCount = arrayCloseCount + bytes.Count(data, []byte("</integer-array>"))
-		arrayCloseCount = arrayCloseCount + bytes.Count(data, []byte("/>"))
+		arrayCloseCount = arrayCloseCount + bytes.Count(data, []byte(`"/>`))
+		arrayCloseCount = arrayCloseCount + bytes.Count(data, []byte(`" />`))
 
 		if arrayOpenCount != arrayCloseCount {
 			return fmt.Errorf("%s: basic XML integrity check failed (array mismatch)", filePath)
