@@ -16,9 +16,9 @@ type Entry struct {
 	apostropheFix bool
 }
 
-// ParseItem parses a Item from a string. It returns true and the Item if it was able
-// to parse an Item from the string. Otherwise it returns false and an empty item.
-func ParseItem(base string, format bool, asciiOnly bool) (bool, Entry) {
+// ParseEntry parses an Entry from a string. It returns true and the Entry if it was able
+// to parse an Entry from the string. Otherwise it returns false and an empty Entry.
+func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 
 	if base == "" {
 		return false, Entry{}

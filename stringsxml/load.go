@@ -46,7 +46,7 @@ func (res *Resources) Load() {
 	// We put every string in a map. This makes sure we have unique keys.
 	// This way we remove double string items.
 	for _, v := range stringEntries {
-		if ok, val := ParseItem(v, res.Format, res.ASCIIOnly); ok {
+		if ok, val := ParseEntry(v, res.Format, res.ASCIIOnly); ok {
 			res.Entries[val.name] = val
 		}
 	}
