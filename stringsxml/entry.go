@@ -56,9 +56,11 @@ func (res *Resources) ParseEntry(base string) (bool, Entry) {
 
 	// Get the name and value
 	var baseSlice []string
+	var formatted bool
 	switch {
 	case strings.Contains(base, ` formatted="false"`):
 		baseSlice = strings.Split(base, `" formatted="false">`)
+		formatted = true
 	default:
 		baseSlice = strings.Split(base, `">`)
 	}
@@ -96,7 +98,6 @@ func (res *Resources) ParseEntry(base string) (bool, Entry) {
 	apostropheFix := strings.IndexByte(value, 39) >= 0
 
 	// Determine if string needs to be formatted
-	var formatted bool
 	if strings.Count(value, "%s") >= 2 {
 		formatted = true
 	}
