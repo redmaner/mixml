@@ -8,6 +8,7 @@ import (
 	"path/filepath"
 
 	"github.com/redmaner/mixml/arraysxml"
+	"github.com/redmaner/mixml/pluralsxml"
 	"github.com/redmaner/mixml/stringsxml"
 	"github.com/redmaner/mixml/utils"
 )
@@ -54,7 +55,7 @@ func format(dir string, format bool) {
 	for _, v := range apks {
 		filepath.Walk(v, func(path string, f os.FileInfo, _ error) error {
 			if !f.IsDir() {
-				if f.Name() == "strings.xml" || f.Name() == "arrays.xml" {
+				if f.Name() == "strings.xml" || f.Name() == "arrays.xml" || f.Name() == "plurals.xml" {
 					files = append(files, path)
 				}
 			}
@@ -88,6 +89,14 @@ func format(dir string, format bool) {
 				fmt.Printf("Formatting %s\n", v)
 			}
 			res := arraysxml.NewResources(v, format, *parASCII)
+			res.Load()
+			res.Write()
+
+		case "plurals.xml":
+			if !*parQuiet {
+				fmt.Printf("Formatting %s\n", v)
+			}
+			res := pluralsxml.NewResources(v, format, *parASCII)
 			res.Load()
 			res.Write()
 		}
