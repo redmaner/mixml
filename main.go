@@ -64,19 +64,19 @@ func format(dir string, format bool) {
 	for _, v := range files {
 		switch {
 		case path.Base(v) == "strings.xml":
+			if !*parQuiet {
+				fmt.Printf("Formatting %s\n", v)
+			}
 			res := stringsxml.NewResources(v, format, *parASCII)
 			res.Load()
 			res.Write()
-			if !*parQuiet {
-				fmt.Printf("Formatted %s\n", v)
-			}
 		case path.Base(v) == "arrays.xml":
+			if !*parQuiet {
+				fmt.Printf("Formatting %s\n", v)
+			}
 			res := arraysxml.NewResources(v, format, *parASCII)
 			res.Load()
 			res.Write()
-			if !*parQuiet {
-				fmt.Printf("Formatted %s\n", v)
-			}
 		}
 
 	}
