@@ -5,6 +5,7 @@ type Resources struct {
 	FilePath  string
 	Keys      []string
 	Entries   map[string]Entry
+	Comment   string
 	Format    bool
 	ASCIIOnly bool
 }

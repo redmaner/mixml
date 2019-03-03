@@ -18,7 +18,7 @@ type Entry struct {
 
 // ParseEntry parses an Entry from a string. It returns true and the Entry if it was able
 // to parse an Entry from the string. Otherwise it returns false and an empty item.
-func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
+func (res *Resources) ParseEntry(base string) (bool, Entry) {
 
 	// We do not parse empty strings
 	if base == "" {
@@ -27,6 +27,7 @@ func ParseEntry(base string, format bool, asciiOnly bool) (bool, Entry) {
 
 	// We remove comments
 	if strings.Contains(base, "<!--") {
+		res.Comment = base + "\n"
 		return false, Entry{}
 	}
 

@@ -29,6 +29,11 @@ func (res *Resources) Write() {
 	defer f.Close()
 
 	io.WriteString(f, fmt.Sprintf("<?xml version='1.0' encoding='UTF-8'?>\n"))
+
+	if res.Comment != "" {
+		io.WriteString(f, res.Comment)
+	}
+
 	io.WriteString(f, fmt.Sprintf("<resources>\n"))
 
 	for _, key := range res.Keys {
