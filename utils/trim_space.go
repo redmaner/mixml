@@ -1,6 +1,6 @@
 package utils
 
-// TrimSpacePrefix removes all space prefixes and suffixes from a string
+// TrimSpace removes all space prefixes and suffixes from a string
 func TrimSpace(base string) string {
 	if base == "" {
 		return base

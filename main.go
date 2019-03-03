@@ -9,6 +9,7 @@ import (
 
 	"github.com/redmaner/mixml/arraysxml"
 	"github.com/redmaner/mixml/stringsxml"
+	"github.com/redmaner/mixml/utils"
 )
 
 const version = "r4"
@@ -62,15 +63,27 @@ func format(dir string, format bool) {
 	}
 
 	for _, v := range files {
-		switch {
-		case path.Base(v) == "strings.xml":
+
+		// Do basic integrity check of XML
+		err := utils.XMLIntegrity(v)
+		if err != nil {
+			if !*parQuiet {
+				fmt.Printf("Skipped: %s\n", err)
+			}
+			continue
+		}
+
+		switch path.Base(v) {
+
+		case "strings.xml":
 			if !*parQuiet {
 				fmt.Printf("Formatting %s\n", v)
 			}
 			res := stringsxml.NewResources(v, format, *parASCII)
 			res.Load()
 			res.Write()
-		case path.Base(v) == "arrays.xml":
+
+		case "arrays.xml":
 			if !*parQuiet {
 				fmt.Printf("Formatting %s\n", v)
 			}
@@ -78,6 +91,5 @@ func format(dir string, format bool) {
 			res.Load()
 			res.Write()
 		}
-
 	}
 }
