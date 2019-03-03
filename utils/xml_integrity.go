@@ -1,3 +1,17 @@
+// Copyright 2019 Jake van der Putten.
+//
+// Licensed under the Apache License, Version 2.0 (the "License");
+// you may not use this file except in compliance with the License.
+// You may obtain a copy of the License at
+//
+//    http://www.apache.org/licenses/LICENSE-2.0
+//
+// Unless required by applicable law or agreed to in writing, software
+// distributed under the License is distributed on an "AS IS" BASIS,
+// WITHOUT WARRANTIES OR CONDITIONS OF ANY KIND, either express or implied.
+// See the License for the specific language governing permissions and
+// limitations under the License.
+
 package utils
 
 import (
@@ -24,7 +38,7 @@ func XMLIntegrity(filePath string) error {
 		return err
 	}
 
-	// Count the occurence of <resources></resources> pairs. These should be equal.
+	// Count the occurrence of <resources></resources> pairs. These should be equal.
 	resourceOpenCount := bytes.Count(data, []byte("<resources>"))
 	resourceCloseCount := bytes.Count(data, []byte("</resources>"))
 
@@ -37,7 +51,7 @@ func XMLIntegrity(filePath string) error {
 	// strings.xml checks
 	case "strings.xml":
 
-		// Count the occurence of <string></string> pairs. These should be equal.
+		// Count the occurrence of <string></string> pairs. These should be equal.
 		stringOpenCount := bytes.Count(data, []byte("<string name="))
 		stringCloseCount := bytes.Count(data, []byte("</string>"))
 		stringCloseCount = stringCloseCount + bytes.Count(data, []byte(`"/>`))
@@ -50,7 +64,7 @@ func XMLIntegrity(filePath string) error {
 		// arrays.xml checks
 	case "arrays.xml":
 
-		// Count the occurence of :
+		// Count the occurrence of :
 		// * <array></array> pairs
 		// * <string-array></string-array> pairs
 		// * <integer-array></integer-array> pairs
@@ -68,7 +82,7 @@ func XMLIntegrity(filePath string) error {
 			return fmt.Errorf("%s: basic XML integrity check failed (array mismatch)", filePath)
 		}
 
-		// Count the occurence of <item></item> pairs. These should be equal.
+		// Count the occurrence of <item></item> pairs. These should be equal.
 		itemOpenCount := bytes.Count(data, []byte("<item>"))
 		itemCloseCount := bytes.Count(data, []byte("</item>"))
 
@@ -79,7 +93,7 @@ func XMLIntegrity(filePath string) error {
 	// Checks for plurals.xml
 	case "plurals.xml":
 
-		// Count the occurence of <plurals></plurals> pairs. These should be equal.
+		// Count the occurrence of <plurals></plurals> pairs. These should be equal.
 		pluralsOpenCount := bytes.Count(data, []byte("<plurals name="))
 		pluralsCloseCount := bytes.Count(data, []byte("</plurals>"))
 
@@ -87,7 +101,7 @@ func XMLIntegrity(filePath string) error {
 			return fmt.Errorf("%s: basic XML integrity check failed (plurals mismatch)", filePath)
 		}
 
-		// Count the occurence of <item></item> pairs. These should be equal.
+		// Count the occurrence of <item></item> pairs. These should be equal.
 		itemOpenCount := bytes.Count(data, []byte("<item"))
 		itemCloseCount := bytes.Count(data, []byte("</item>"))
 
