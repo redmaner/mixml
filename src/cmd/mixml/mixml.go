@@ -3,96 +3,55 @@ package main
 import (
 	"flag"
 	"os"
-
-	"github.com/redmaner/mixml/src/miuires"
-	"gopkg.in/yaml.v2"
 )
 
 const version = "r6"
 
 // Commands
-var cmdFormat bool
-var cmdIntegrity bool
+var cmdFormat = flag.NewFlagSet("format", flag.ExitOnError)
+var cmdCheck = flag.NewFlagSet("check", flag.ExitOnError)
 
 // Arguments
 var argDir string
 var argFilter bool
 var argFilterConfig string
 var argVerbose bool
+var argHelp bool
 
 func init() {
-	flag.BoolVar(&cmdFormat, "format", false, "Format MIUI resources")
-	flag.BoolVar(&cmdIntegrity, "check", false, "Check basic integrity of MIUI resources")
-	flag.StringVar(&argDir, "dir", "./", "Directory of MIUI resources")
-	flag.StringVar(&argDir, "d", "./", "Directory of MIUI resources")
-	flag.BoolVar(&argFilter, "filter", false, "Filter MIUI resources")
-	flag.BoolVar(&argFilter, "f", false, "Filter MIUI resources")
-	flag.StringVar(&argFilterConfig, "config", "", "Path to filter configuration")
-	flag.StringVar(&argFilterConfig, "c", "", "Path to filter configuration")
-	flag.BoolVar(&argVerbose, "verbose", false, "Print verbose logging")
-	flag.BoolVar(&argVerbose, "v", false, "Print verbose logging")
+
+	// Arguments for format
+	cmdFormat.StringVar(&argDir, "dir", "./", "Directory of MIUI resources")
+	cmdFormat.StringVar(&argDir, "d", "./", "Directory of MIUI resources")
+	cmdFormat.BoolVar(&argFilter, "filter", false, "Filter MIUI resources")
+	cmdFormat.BoolVar(&argFilter, "f", false, "Filter MIUI resources")
+	cmdFormat.StringVar(&argFilterConfig, "config", "", "Path to filter configuration")
+	cmdFormat.StringVar(&argFilterConfig, "c", "", "Path to filter configuration")
+	cmdFormat.BoolVar(&argHelp, "help", false, "Show help")
+	cmdFormat.BoolVar(&argHelp, "h", false, "Show help")
+	cmdFormat.BoolVar(&argVerbose, "verbose", false, "Print verbose logging")
+	cmdFormat.BoolVar(&argVerbose, "v", false, "Print verbose logging")
+
+	// Arguments for check
+	cmdCheck.StringVar(&argDir, "dir", "./", "Directory of MIUI resources")
+	cmdCheck.StringVar(&argDir, "d", "./", "Directory of MIUI resources")
 }
 
 func main() {
 
-	// Parse flags
-	flag.Parse()
+	args := os.Args
+	if len(args) <= 2 {
+		showHelp()
+	}
 
-	switch {
-	case cmdFormat:
+	switch args[1] {
+	case "format":
+		if err := cmdFormat.Parse(args[2:]); err != nil {
+			showHelp()
+		}
 		format()
-	case cmdIntegrity:
-		fc := miuires.FilterConfig{
-			StringsKeyRules:   make(map[string][]miuires.FilterRules),
-			StringsValueRules: make(map[string][]miuires.FilterRules),
-		}
-
-		fc.StringsKeyRules["all"] = append(fc.StringsKeyRules["all"], miuires.FilterRules{
-			Match: "com.",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["all"] = append(fc.StringsValueRules["all"], miuires.FilterRules{
-			Match: "@drawable",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["all"] = append(fc.StringsValueRules["all"], miuires.FilterRules{
-			Match: "@string",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["all"] = append(fc.StringsValueRules["all"], miuires.FilterRules{
-			Match: "@color",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["Settings.apk"] = append(fc.StringsValueRules["Settings.apk"], miuires.FilterRules{
-			Match: "@drawable",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["Settings.apk"] = append(fc.StringsValueRules["Settings.apk"], miuires.FilterRules{
-			Match: "@string",
-			Mode:  "prefix",
-		})
-
-		fc.StringsValueRules["Settings.apk"] = append(fc.StringsValueRules["Settings.apk"], miuires.FilterRules{
-			Match: "@color",
-			Mode:  "prefix",
-		})
-
-		f, err := os.Create("./example-filter.yaml")
-		if err != nil {
-			panic(err)
-		}
-
-		out, _ := yaml.Marshal(&fc)
-		f.Write(out)
-		f.Close()
-
+	case "check":
 	default:
-		flag.PrintDefaults()
-		os.Exit(0)
+		showHelp()
 	}
 }

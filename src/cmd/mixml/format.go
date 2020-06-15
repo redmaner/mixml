@@ -11,6 +11,10 @@ import (
 // Format function
 func format() {
 
+	if argHelp {
+		showHelpFormat()
+	}
+
 	var apks []string
 	filepath.Walk(argDir, func(path string, f os.FileInfo, _ error) error {
 		if filepath.Ext(path) == ".apk" {
