@@ -125,8 +125,9 @@ func (ea *ElementArrays) Write() []byte {
 // ElementPlurals implements the Elementer interface, and holds information and behavior
 // to handle MIUI plurals.xml
 type ElementPlurals struct {
-	name  string
-	items [][]string
+	name       string
+	items      []string
+	quantities []string
 }
 
 // GetName returns the name (key) of the plurals element
@@ -191,7 +192,8 @@ func (ep *ElementPlurals) Parse(base string) (ok bool) {
 			quantity := strSlice[0]
 			value := fixApostrophe(strSlice[1])
 
-			ep.items = append(ep.items, []string{quantity, value})
+			ep.items = append(ep.items, value)
+			ep.quantities = append(ep.quantities, quantity)
 			continue
 		}
 		if strBuffer != "" {
@@ -207,14 +209,11 @@ func (ep *ElementPlurals) Parse(base string) (ok bool) {
 func (ep *ElementPlurals) Write() []byte {
 	w := bytes.NewBuffer([]byte{})
 	buf := bytes.NewBufferString("")
-
 	buf.WriteString(fmt.Sprintf(`    <plurals name="%s">`+"\n", ep.name))
-
-	for _, item := range ep.items {
-		buf.WriteString(fmt.Sprintf(`        <item quantity="%s">%s</item>`+"\n", item[0], item[1]))
+	for index, item := range ep.items {
+		buf.WriteString(fmt.Sprintf(`        <item quantity="%s">%s</item>`+"\n", item, ep.quantities[index]))
 	}
 	buf.WriteString(fmt.Sprintf(`    </plurals>` + "\n"))
-
 	w.WriteString(buf.String())
 	return w.Bytes()
 }
