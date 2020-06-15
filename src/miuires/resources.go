@@ -92,17 +92,17 @@ func (res *Resources) Load() (err error) {
 		}
 
 		switch res.FileType {
-		case "arrays.xml":
+		case FileTypeArrays:
 			var element ElementArrays
 			if ok := element.Parse(v); ok {
 				res.Elements[element.GetName()] = &element
 			}
-		case "plurals.xml":
+		case FileTypePlurals:
 			var element ElementPlurals
 			if ok := element.Parse(v); ok {
 				res.Elements[element.GetName()] = &element
 			}
-		case "strings.xml":
+		case FileTypeStrings:
 			var element ElementStrings
 			if ok := element.Parse(v); ok {
 				res.Elements[element.GetName()] = &element
@@ -125,7 +125,7 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 	for elementKey, element := range res.Elements {
 
 		switch res.FileType {
-		case "strings.xml":
+		case FileTypeStrings:
 			// Filter general key rules
 			if rules, ok := fc.StringsKeyRules["all"]; ok {
 				res.filterKey(rules, elementKey)
@@ -146,7 +146,7 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 				res.filterValue(rules, element.GetValue())
 			}
 
-		case "arrays.xml":
+		case FileTypeArrays:
 			// Filter general key rules
 			if rules, ok := fc.ArraysKeyRules["all"]; ok {
 				res.filterKey(rules, elementKey)
@@ -157,7 +157,7 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 				res.filterKey(rules, elementKey)
 			}
 
-		case "plurals.xml":
+		case FileTypePlurals:
 			// Filter general key rules
 			if rules, ok := fc.PluralsKeyRules["all"]; ok {
 				res.filterKey(rules, elementKey)

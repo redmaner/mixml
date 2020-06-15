@@ -4,12 +4,8 @@ import (
 	"io/ioutil"
 	"os"
 
-	"gopkg.in/yaml.v2"
+	yaml "gopkg.in/yaml.v2"
 )
-
-const FilterModePrefix = "prefix"
-const FilterModeSuffix = "suffix"
-const FilterModeContains = "contains"
 
 type FilterConfig struct {
 	StringsKeyRules   map[string][]FilterRules `yaml:"strings_key_rules"`

@@ -25,7 +25,7 @@ func trimSpace(base string) string {
 	return base
 }
 
-// XMLIntegrity checks basic XML integrity of strings.xml and arrays.xml
+// CheckIntegrity checks basic XML integrity of strings.xml and arrays.xml
 func (res *Resources) CheckIntegrity() (err error) {
 
 	// Open file, defer closure
@@ -52,7 +52,7 @@ func (res *Resources) CheckIntegrity() (err error) {
 	switch res.FileType {
 
 	// strings.xml checks
-	case "strings.xml":
+	case FileTypeStrings:
 
 		// Count the occurrence of <string></string> pairs. These should be equal.
 		stringOpenCount := bytes.Count(data, []byte("<string name="))
@@ -65,7 +65,7 @@ func (res *Resources) CheckIntegrity() (err error) {
 		}
 
 		// arrays.xml checks
-	case "arrays.xml":
+	case FileTypeArrays:
 
 		// Count the occurrence of :
 		// * <array></array> pairs
@@ -93,8 +93,8 @@ func (res *Resources) CheckIntegrity() (err error) {
 			return fmt.Errorf("%s: basic XML integrity check failed (item mismatch)", res.FilePath)
 		}
 
-	// Checks for plurals.xml
-	case "plurals.xml":
+		// Checks for plurals.xml
+	case FileTypePlurals:
 
 		// Count the occurrence of <plurals></plurals> pairs. These should be equal.
 		pluralsOpenCount := bytes.Count(data, []byte("<plurals name="))
