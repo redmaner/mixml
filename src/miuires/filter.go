@@ -7,6 +7,7 @@ import (
 	yaml "gopkg.in/yaml.v2"
 )
 
+// FilterConfig holds filter rules
 type FilterConfig struct {
 	StringsKeyRules   map[string][]FilterRules `yaml:"strings_key_rules"`
 	ArraysKeyRules    map[string][]FilterRules `yaml:"arrays_key_rules"`
@@ -14,11 +15,13 @@ type FilterConfig struct {
 	StringsValueRules map[string][]FilterRules `yaml:"strings_value_rules"`
 }
 
+// FilterRules holds rules used to filter keys and/or values
 type FilterRules struct {
 	Match string `yaml:"match"`
 	Mode  string `yaml:"mode"`
 }
 
+// GetFilterConfigFromFile returns a new FilterConfig from a YAML file
 func GetFilterConfigFromFile(r *os.File) (*FilterConfig, error) {
 
 	// Read data from reader

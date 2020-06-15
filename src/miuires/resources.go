@@ -11,6 +11,7 @@ import (
 	"strings"
 )
 
+// Resources contains MIUI resources. Resources are divided per file and file type
 type Resources struct {
 	FilePath string
 	FileType string
@@ -20,6 +21,7 @@ type Resources struct {
 	Comment  string
 }
 
+// NewResources returns new unloaded resources
 func NewResources(filePath string) (res *Resources) {
 
 	// Get app name
@@ -41,6 +43,7 @@ func NewResources(filePath string) (res *Resources) {
 	}
 }
 
+// Load loads the resources from res.FilePath
 func (res *Resources) Load() (err error) {
 
 	// Do XML integrity check first
@@ -120,6 +123,7 @@ func (res *Resources) Load() (err error) {
 	return nil
 }
 
+// Filter filters the resources using FilterConfig
 func (res *Resources) Filter(fc *FilterConfig) error {
 
 	for elementKey, element := range res.Elements {
@@ -212,6 +216,7 @@ func (res *Resources) filterValue(rules []FilterRules, elementValue string) {
 	}
 }
 
+// Write writes resources to res.FilePath
 func (res *Resources) Write() {
 
 	if len(res.Keys) == 0 {
