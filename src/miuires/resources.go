@@ -16,7 +16,7 @@ type Resources struct {
 	FileType string
 	AppName  string
 	Keys     []string
-	Elements map[string]ElementHelper
+	Elements map[string]Elementer
 	Comment  string
 }
 
@@ -37,7 +37,7 @@ func NewResources(filePath string) (res *Resources) {
 		FileType: path.Base(filePath),
 		AppName:  appName,
 		Keys:     []string{},
-		Elements: make(map[string]ElementHelper),
+		Elements: make(map[string]Elementer),
 	}
 }
 
