@@ -96,19 +96,16 @@ func (res *Resources) Load() (err error) {
 
 		switch res.FileType {
 		case FileTypeArrays:
-			var element ElementArrays
-			if ok := element.Parse(v); ok {
-				res.Elements[element.GetName()] = &element
+			if ok, element := NewArrays(v); ok {
+				res.Elements[element.GetName()] = element
 			}
 		case FileTypePlurals:
-			var element ElementPlurals
-			if ok := element.Parse(v); ok {
-				res.Elements[element.GetName()] = &element
+			if ok, element := NewPlurals(v); ok {
+				res.Elements[element.GetName()] = element
 			}
 		case FileTypeStrings:
-			var element ElementStrings
-			if ok := element.Parse(v); ok {
-				res.Elements[element.GetName()] = &element
+			if ok, element := NewStrings(v); ok {
+				res.Elements[element.GetName()] = element
 			}
 		}
 	}

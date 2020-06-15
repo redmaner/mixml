@@ -12,7 +12,6 @@ type Elementer interface {
 	GetName() (name string)
 	GetItems() (items []string)
 	GetValue() (value string)
-	Parse(base string) (ok bool)
 	Write() []byte
 }
 
@@ -24,33 +23,20 @@ type ElementArrays struct {
 	items []string
 }
 
-// GetName returns the name (key) of the arrays element
-func (ea *ElementArrays) GetName() (name string) {
-	return ea.name
-}
+// NewArrays parses a string and converts it into an arrays element if possible
+// It returns ok if it was succesful, and a pointer to the new ElementArrays
+func NewArrays(base string) (bool, *ElementArrays) {
 
-// GetItems returns the items of the arrays element
-func (ea *ElementArrays) GetItems() (items []string) {
-	return ea.items
-}
-
-// GetValue returns the value (body) of the arrays element
-func (ea *ElementArrays) GetValue() (value string) {
-	return ""
-}
-
-// Parse parses a string and converts it into an arrays element if possible
-// It returns ok if it was succesful
-func (ea *ElementArrays) Parse(base string) (ok bool) {
+	var ea ElementArrays
 
 	// We do not parse empty strings
 	if base == "" {
-		return false
+		return false, nil
 	}
 
 	// We remove comments
 	if strings.Contains(base, "<!--") {
-		return false
+		return false, nil
 	}
 
 	var parsedFirstLine bool
@@ -84,7 +70,7 @@ func (ea *ElementArrays) Parse(base string) (ok bool) {
 			if strings.Contains(str, "/>") {
 				strSlice := strings.Split(str, `"`)
 				ea.name = strSlice[0]
-				return true
+				return true, &ea
 			}
 
 			// Handle normal array
@@ -121,7 +107,22 @@ func (ea *ElementArrays) Parse(base string) (ok bool) {
 		strBuffer = strBuffer + str
 	}
 
-	return true
+	return true, &ea
+}
+
+// GetName returns the name (key) of the arrays element
+func (ea *ElementArrays) GetName() (name string) {
+	return ea.name
+}
+
+// GetItems returns the items of the arrays element
+func (ea *ElementArrays) GetItems() (items []string) {
+	return ea.items
+}
+
+// GetValue returns the value (body) of the arrays element
+func (ea *ElementArrays) GetValue() (value string) {
+	return ""
 }
 
 // Write writes the contents of the arrays element to a slice of bytes
@@ -152,33 +153,20 @@ type ElementPlurals struct {
 	quantities []string
 }
 
-// GetName returns the name (key) of the plurals element
-func (ep *ElementPlurals) GetName() (name string) {
-	return ep.name
-}
+// NewPlurals parses a string and converts it into an plurals element if possible
+// It returns ok if it was succesful, and a pointer to the new ElementPlurals
+func NewPlurals(base string) (bool, *ElementPlurals) {
 
-// GetItems returns the items of the plurals element
-func (ep *ElementPlurals) GetItems() (items []string) {
-	return ep.items
-}
-
-// GetValue returns the value (body) of the plurals element
-func (ep *ElementPlurals) GetValue() (value string) {
-	return ""
-}
-
-// Parse parses a string and converts it into an plurals element if possible
-// It returns ok if it was succesful
-func (ep *ElementPlurals) Parse(base string) (ok bool) {
+	var ep ElementPlurals
 
 	// We do not parse empty strings
 	if base == "" {
-		return false
+		return false, nil
 	}
 
 	// We remove comments
 	if strings.Contains(base, "<!--") {
-		return false
+		return false, nil
 	}
 
 	var parsedFirstLine bool
@@ -229,7 +217,22 @@ func (ep *ElementPlurals) Parse(base string) (ok bool) {
 		strBuffer = strBuffer + str
 	}
 
-	return true
+	return true, &ep
+}
+
+// GetName returns the name (key) of the plurals element
+func (ep *ElementPlurals) GetName() (name string) {
+	return ep.name
+}
+
+// GetItems returns the items of the plurals element
+func (ep *ElementPlurals) GetItems() (items []string) {
+	return ep.items
+}
+
+// GetValue returns the value (body) of the plurals element
+func (ep *ElementPlurals) GetValue() (value string) {
+	return ""
 }
 
 // Write writes the contents of the plurals element to a slice of bytes
@@ -253,32 +256,20 @@ type ElementStrings struct {
 	formatted bool
 }
 
-// GetName returns the name (key) of the strings element
-func (es *ElementStrings) GetName() (name string) {
-	return es.name
-}
+// NewStrings parses a string and converts it into a strings element if possible
+// It returns ok if it was succesful, and a pointer to the new ElementStrings
+func NewStrings(base string) (bool, *ElementStrings) {
 
-// GetItems returns the items of the strings element
-func (es *ElementStrings) GetItems() (items []string) {
-	return []string{}
-}
+	var es ElementStrings
 
-// GetValue returns the value (body) of the strings element
-func (es *ElementStrings) GetValue() (value string) {
-	return es.value
-}
-
-// Parse parses a string and converts it into a strings element if possible
-// It returns ok if it was succesful
-func (es *ElementStrings) Parse(base string) (ok bool) {
 	// We do not parse empty strings
 	if base == "" {
-		return false
+		return false, nil
 	}
 
 	// We remove comments
 	if strings.Contains(base, "<!--") {
-		return false
+		return false, nil
 	}
 
 	// Trim spaces
@@ -292,7 +283,7 @@ func (es *ElementStrings) Parse(base string) (ok bool) {
 		baseSlice := strings.Split(base, `name="`)
 		baseSlice = strings.Split(baseSlice[1], `"`)
 		es.name = baseSlice[0]
-		return true
+		return true, &es
 	}
 
 	// Trim suffix
@@ -317,7 +308,22 @@ func (es *ElementStrings) Parse(base string) (ok bool) {
 	if strings.Count(es.value, "%d") >= 2 {
 		es.formatted = true
 	}
-	return true
+	return true, &es
+}
+
+// GetName returns the name (key) of the strings element
+func (es *ElementStrings) GetName() (name string) {
+	return es.name
+}
+
+// GetItems returns the items of the strings element
+func (es *ElementStrings) GetItems() (items []string) {
+	return []string{}
+}
+
+// GetValue returns the value (body) of the strings element
+func (es *ElementStrings) GetValue() (value string) {
+	return es.value
 }
 
 // Write writes the contents of the element strings to a slice of bytes
