@@ -73,6 +73,15 @@ func (ea *ElementArrays) Parse(base string) (ok bool) {
 			// Trim prefix and suffix
 			str = trimSpace(str)
 			str = strings.TrimPrefix(str, fmt.Sprintf(`<%s name="`, ea.form))
+
+			// Handle empty array
+			if strings.Contains(str, "/>") {
+				strSlice := strings.Split(str, `"`)
+				ea.name = strSlice[0]
+				return true
+			}
+
+			// Handle normal array
 			str = strings.TrimSuffix(str, `">`)
 			ea.name = str
 			continue
@@ -111,6 +120,13 @@ func (ea *ElementArrays) Parse(base string) (ok bool) {
 
 // Write writes the contents of the arrays element to a slice of bytes
 func (ea *ElementArrays) Write() []byte {
+
+	// Handle empty array
+	if len(ea.items) == 0 {
+		return []byte(fmt.Sprintf(`    <%s name="%s"/>`+"\n", ea.form, ea.name))
+	}
+
+	// Handle normal arrays
 	w := bytes.NewBuffer([]byte{})
 	buf := bytes.NewBufferString("")
 	buf.WriteString(fmt.Sprintf(`    <%s name="%s">`+"\n", ea.form, ea.name))
@@ -255,6 +271,14 @@ func (es *ElementStrings) Parse(base string) (ok bool) {
 	// Trim prefix
 	base = strings.TrimPrefix(base, "<string ")
 
+	// Handle empty strings
+	if strings.Contains(base, `"/>`) || strings.Contains(base, `" />`) {
+		baseSlice := strings.Split(base, `name="`)
+		baseSlice = strings.Split(baseSlice[1], `"`)
+		es.name = baseSlice[0]
+		return true
+	}
+
 	// Trim suffix
 	base = strings.TrimSuffix(base, "</string>")
 
@@ -282,13 +306,16 @@ func (es *ElementStrings) Parse(base string) (ok bool) {
 
 // Write writes the contents of the element strings to a slice of bytes
 func (es *ElementStrings) Write() []byte {
+
+	// Handle empty strings
+	if es.value == "" {
+		return []byte(fmt.Sprintf(`    <string name="%s"/>`, es.name) + "\n")
+	}
+
+	// Handle normal strings
 	var formatString string
-	var writeString string
-	w := bytes.NewBuffer([]byte{})
 	if es.formatted {
 		formatString = ` formatted="false"`
 	}
-	writeString = fmt.Sprintf(`    <string name="%s"%s>%s</string>`+"\n", es.name, formatString, es.GetValue())
-	w.WriteString(writeString)
-	return w.Bytes()
+	return []byte(fmt.Sprintf(`    <string name="%s"%s>%s</string>`+"\n", es.name, formatString, es.GetValue()))
 }

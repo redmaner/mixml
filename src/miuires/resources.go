@@ -70,7 +70,7 @@ func (res *Resources) Load() (err error) {
 		str := scanner.Text()
 
 		// If a string item has trash in it, we skip the line
-		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") || strings.Contains(str, "/>") {
+		if strings.Contains(str, "resources>") || strings.Contains(str, "<?xml") {
 			continue
 		}
 
