@@ -241,7 +241,7 @@ func (ep *ElementPlurals) Write() []byte {
 	buf := bytes.NewBufferString("")
 	buf.WriteString(fmt.Sprintf(`  <plurals name="%s">`+"\n", ep.name))
 	for index, item := range ep.items {
-		buf.WriteString(fmt.Sprintf(`    <item quantity="%s">%s</item>`+"\n", item, ep.quantities[index]))
+		buf.WriteString(fmt.Sprintf(`    <item quantity="%s">%s</item>`+"\n", ep.quantities[index], item))
 	}
 	buf.WriteString(fmt.Sprintf(`  </plurals>` + "\n"))
 	w.WriteString(buf.String())
