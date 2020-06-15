@@ -2,11 +2,11 @@ package miuires
 
 import (
 	"bufio"
+	"errors"
 	"fmt"
 	"io"
-	"log"
 	"os"
-	"path"
+	"path/filepath"
 	"sort"
 	"strings"
 )
@@ -36,7 +36,7 @@ func NewResources(filePath string) (res *Resources) {
 
 	return &Resources{
 		FilePath: filePath,
-		FileType: path.Base(filePath),
+		FileType: filepath.Base(filePath),
 		AppName:  appName,
 		Keys:     []string{},
 		Elements: make(map[string]Elementer),
@@ -217,15 +217,15 @@ func (res *Resources) filterValue(rules []FilterRules, elementValue string) {
 }
 
 // Write writes resources to res.FilePath
-func (res *Resources) Write() {
+func (res *Resources) Write() error {
 
 	if len(res.Keys) == 0 {
-		return
+		return errors.New("No resources to write")
 	}
 
 	f, err := os.Create(res.FilePath)
 	if err != nil {
-		log.Fatalf("%v\n", err)
+		return err
 	}
 	defer f.Close()
 
@@ -245,4 +245,5 @@ func (res *Resources) Write() {
 	}
 
 	io.WriteString(f, fmt.Sprintf("</resources>\n"))
+	return nil
 }
