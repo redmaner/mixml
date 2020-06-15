@@ -130,17 +130,17 @@ func (ea *ElementArrays) Write() []byte {
 
 	// Handle empty array
 	if len(ea.items) == 0 {
-		return []byte(fmt.Sprintf(`    <%s name="%s"/>`+"\n", ea.form, ea.name))
+		return []byte(fmt.Sprintf(`  <%s name="%s"/>`+"\n", ea.form, ea.name))
 	}
 
 	// Handle normal arrays
 	w := bytes.NewBuffer([]byte{})
 	buf := bytes.NewBufferString("")
-	buf.WriteString(fmt.Sprintf(`    <%s name="%s">`+"\n", ea.form, ea.name))
+	buf.WriteString(fmt.Sprintf(`  <%s name="%s">`+"\n", ea.form, ea.name))
 	for _, item := range ea.items {
-		buf.WriteString(fmt.Sprintf(`        <item>%s</item>`+"\n", item))
+		buf.WriteString(fmt.Sprintf(`    <item>%s</item>`+"\n", item))
 	}
-	buf.WriteString(fmt.Sprintf(`    </%s>`+"\n", ea.form))
+	buf.WriteString(fmt.Sprintf(`  </%s>`+"\n", ea.form))
 	w.WriteString(buf.String())
 	return w.Bytes()
 }
@@ -239,11 +239,11 @@ func (ep *ElementPlurals) GetValue() (value string) {
 func (ep *ElementPlurals) Write() []byte {
 	w := bytes.NewBuffer([]byte{})
 	buf := bytes.NewBufferString("")
-	buf.WriteString(fmt.Sprintf(`    <plurals name="%s">`+"\n", ep.name))
+	buf.WriteString(fmt.Sprintf(`  <plurals name="%s">`+"\n", ep.name))
 	for index, item := range ep.items {
-		buf.WriteString(fmt.Sprintf(`        <item quantity="%s">%s</item>`+"\n", item, ep.quantities[index]))
+		buf.WriteString(fmt.Sprintf(`    <item quantity="%s">%s</item>`+"\n", item, ep.quantities[index]))
 	}
-	buf.WriteString(fmt.Sprintf(`    </plurals>` + "\n"))
+	buf.WriteString(fmt.Sprintf(`  </plurals>` + "\n"))
 	w.WriteString(buf.String())
 	return w.Bytes()
 }
@@ -331,7 +331,7 @@ func (es *ElementStrings) Write() []byte {
 
 	// Handle empty strings
 	if es.value == "" {
-		return []byte(fmt.Sprintf(`    <string name="%s"/>`, es.name) + "\n")
+		return []byte(fmt.Sprintf(`  <string name="%s"/>`, es.name) + "\n")
 	}
 
 	// Handle normal strings
@@ -339,5 +339,5 @@ func (es *ElementStrings) Write() []byte {
 	if es.formatted {
 		formatString = ` formatted="false"`
 	}
-	return []byte(fmt.Sprintf(`    <string name="%s"%s>%s</string>`+"\n", es.name, formatString, es.GetValue()))
+	return []byte(fmt.Sprintf(`  <string name="%s"%s>%s</string>`+"\n", es.name, formatString, es.GetValue()))
 }
