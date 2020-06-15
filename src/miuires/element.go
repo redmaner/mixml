@@ -10,6 +10,7 @@ import (
 // Elementer is an interface that holds common behavior for MIUI resources
 type Elementer interface {
 	GetName() (name string)
+	GetItems() (items []string)
 	GetValue() (value string)
 	Parse(base string) (ok bool)
 	Write() []byte
@@ -26,6 +27,11 @@ type ElementArrays struct {
 // GetName returns the name (key) of the arrays element
 func (ea *ElementArrays) GetName() (name string) {
 	return ea.name
+}
+
+// GetItems returns the items of the arrays element
+func (ea *ElementArrays) GetItems() (items []string) {
+	return ea.items
 }
 
 // GetValue returns the value (body) of the arrays element
@@ -151,6 +157,11 @@ func (ep *ElementPlurals) GetName() (name string) {
 	return ep.name
 }
 
+// GetItems returns the items of the plurals element
+func (ep *ElementPlurals) GetItems() (items []string) {
+	return ep.items
+}
+
 // GetValue returns the value (body) of the plurals element
 func (ep *ElementPlurals) GetValue() (value string) {
 	return ""
@@ -245,6 +256,11 @@ type ElementStrings struct {
 // GetName returns the name (key) of the strings element
 func (es *ElementStrings) GetName() (name string) {
 	return es.name
+}
+
+// GetItems returns the items of the strings element
+func (es *ElementStrings) GetItems() (items []string) {
+	return []string{}
 }
 
 // GetValue returns the value (body) of the strings element
