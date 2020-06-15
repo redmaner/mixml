@@ -5,6 +5,7 @@ import (
 	"fmt"
 	"io/ioutil"
 	"os"
+	"strings"
 )
 
 // trimSpace removes all space prefixes and suffixes from a string
@@ -23,6 +24,39 @@ func trimSpace(base string) string {
 		base = base[:len(base)-1]
 	}
 	return base
+}
+
+func fixApostrophe(base string) (fixed string) {
+
+	// If strings are encapsulated with quotes, return base
+	if base[0] == '"' {
+		return base
+	}
+
+	// If there are no apostrophes, return base
+	apostropheIndex := strings.IndexByte(base, 39)
+	if apostropheIndex < 0 {
+		return base
+	}
+
+	// If apostrophe is escaped with backslash, return base
+	if apostropheIndex > 0 && base[apostropheIndex-1] == 92 {
+		return base
+	}
+
+	// We fix the apostrophe's by escaping it with a backslash
+	splits := strings.Split(base, "'")
+	firstParsed := false
+	for _, split := range splits {
+		if !firstParsed {
+			firstParsed = true
+			fixed = split
+			continue
+		}
+		fixed = fixed + `\'` + split
+	}
+
+	return fixed
 }
 
 // CheckIntegrity checks basic XML integrity of strings.xml and arrays.xml

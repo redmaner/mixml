@@ -97,7 +97,7 @@ func (ea *ElementArrays) Parse(base string) (ok bool) {
 			str = trimSpace(str)
 			str = strings.TrimPrefix(str, "<item>")
 			str = strings.TrimSuffix(str, "</item>")
-			ea.items = append(ea.items, str)
+			ea.items = append(ea.items, fixApostrophe(str))
 			continue
 		}
 		if strBuffer != "" {
@@ -189,7 +189,7 @@ func (ep *ElementPlurals) Parse(base string) (ok bool) {
 
 			strSlice := strings.Split(str, `">`)
 			quantity := strSlice[0]
-			value := strSlice[1]
+			value := fixApostrophe(strSlice[1])
 
 			ep.items = append(ep.items, []string{quantity, value})
 			continue
@@ -222,10 +222,9 @@ func (ep *ElementPlurals) Write() []byte {
 // ElementStrings implements the Elementer interface, and holds information and behavior
 // to handle MIUI strings.xml
 type ElementStrings struct {
-	name          string
-	value         string
-	formatted     bool
-	apostropheFix bool
+	name      string
+	value     string
+	formatted bool
 }
 
 // GetName returns the name (key) of the strings element
@@ -235,36 +234,6 @@ func (es *ElementStrings) GetName() (name string) {
 
 // GetValue returns the value (body) of the strings element
 func (es *ElementStrings) GetValue() (value string) {
-
-	// We fix apostrophe errors, by adding a \ in front of it
-	// this slash is only added when it does not yet exist
-	if es.apostropheFix && es.value[0] != '"' {
-		es.apostropheFix = false
-		var newValue string
-
-		strSlice := strings.Split(es.value, "'")
-		splits := len(strSlice)
-		for i, v := range strSlice {
-
-			if v == "" {
-				continue
-			}
-
-			if i == splits-1 {
-				newValue = newValue + v
-				break
-			}
-
-			lastChar := len(v) - 1
-			if v[lastChar] == 92 {
-				newValue = newValue + v + "'"
-				continue
-			}
-			newValue = newValue + v + `\'`
-		}
-		es.value = newValue
-	}
-
 	return es.value
 }
 
@@ -300,10 +269,7 @@ func (es *ElementStrings) Parse(base string) (ok bool) {
 		baseSlice = strings.Split(base, `">`)
 	}
 	es.name = strings.TrimPrefix(baseSlice[0], `name="`)
-	es.value = baseSlice[1]
-
-	// Determine if apostrophe's need to be fixed
-	es.apostropheFix = strings.IndexByte(es.value, 39) >= 0
+	es.value = fixApostrophe(baseSlice[1])
 
 	// Determine if string needs to be formatted
 	if strings.Count(es.value, "%s") >= 2 {
