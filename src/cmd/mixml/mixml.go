@@ -2,6 +2,7 @@ package main
 
 import (
 	"flag"
+	"fmt"
 	"os"
 )
 
@@ -40,13 +41,14 @@ func init() {
 func main() {
 
 	args := os.Args
-	if len(args) <= 2 {
+	if len(args) < 2 {
 		showHelp()
 	}
 
 	switch args[1] {
 	case "format":
-		if err := cmdFormat.Parse(args[2:]); err != nil {
+		if err := cmdFormat.Parse(args); err != nil {
+			fmt.Println(err)
 			showHelp()
 		}
 		format()
