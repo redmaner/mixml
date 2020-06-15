@@ -28,14 +28,14 @@ func trimSpace(base string) string {
 
 func fixApostrophe(base string) (fixed string) {
 
-	// If strings are encapsulated with quotes, return base
-	if base[0] == '"' {
-		return base
-	}
-
 	// If there are no apostrophes, return base
 	apostropheIndex := strings.IndexByte(base, 39)
 	if apostropheIndex < 0 {
+		return base
+	}
+
+	// If strings are encapsulated with quotes, return base
+	if base[0] == '"' {
 		return base
 	}
 
