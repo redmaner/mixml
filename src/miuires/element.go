@@ -1,7 +1,6 @@
 package miuires
 
 import (
-	"bufio"
 	"bytes"
 	"fmt"
 	"strings"
@@ -42,7 +41,8 @@ func NewArrays(base string) (bool, *ElementArrays) {
 	var parsedFirstLine bool
 	var strBuffer string
 
-	scanner := bufio.NewScanner(bytes.NewBufferString(base))
+	base = trimSpace(base)
+	scanner := NewElementScanner(bytes.NewBufferString(base))
 
 	for scanner.Scan() {
 
@@ -92,7 +92,7 @@ func NewArrays(base string) (bool, *ElementArrays) {
 
 		if strings.Contains(str, "</item>") {
 			if strBuffer != "" {
-				str = strBuffer + "\n" + str
+				str = strBuffer + str
 			}
 			strBuffer = ""
 			str = trimSpace(str)
@@ -172,7 +172,8 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 	var parsedFirstLine bool
 	var strBuffer string
 
-	scanner := bufio.NewScanner(bytes.NewBufferString(base))
+	base = trimSpace(base)
+	scanner := NewElementScanner(bytes.NewBufferString(base))
 
 	for scanner.Scan() {
 
@@ -196,7 +197,7 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 
 		if strings.Contains(str, "</item>") {
 			if strBuffer != "" {
-				str = strBuffer + "\n" + str
+				str = strBuffer + str
 			}
 			strBuffer = ""
 			str = trimSpace(str)

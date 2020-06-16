@@ -1,7 +1,6 @@
 package miuires
 
 import (
-	"bufio"
 	"errors"
 	"fmt"
 	"io"
@@ -60,7 +59,7 @@ func (res *Resources) Load() (err error) {
 	defer f.Close()
 
 	// We scan the file with a bufio.Scanner. Each element item is stored in a slice.
-	scanner := bufio.NewScanner(f)
+	scanner := NewElementScanner(f)
 	var elements []string
 	var elementPlaceholder string
 
@@ -80,7 +79,7 @@ func (res *Resources) Load() (err error) {
 			elementPlaceholder = str
 			continue
 		}
-		elementPlaceholder = elementPlaceholder + "\n" + str
+		elementPlaceholder = elementPlaceholder + str
 	}
 	elements = append(elements, elementPlaceholder)
 
@@ -90,7 +89,7 @@ func (res *Resources) Load() (err error) {
 
 		// Handle comment
 		if strings.Contains(v, "<!--") && res.Comment == "" {
-			res.Comment = v + "\n"
+			res.Comment = v
 			continue
 		}
 
