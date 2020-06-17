@@ -13,6 +13,7 @@ type FilterConfig struct {
 	ArraysKeyRules    map[string][]FilterRules `yaml:"arrays_key_rules"`
 	PluralsKeyRules   map[string][]FilterRules `yaml:"plurals_key_rules"`
 	StringsValueRules map[string][]FilterRules `yaml:"strings_value_rules"`
+	ArraysValueRules  map[string][]FilterRules `yaml:"arrays_value_rules"`
 }
 
 // FilterRules holds rules used to filter keys and/or values

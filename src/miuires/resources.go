@@ -6,6 +6,7 @@ import (
 	"io"
 	"os"
 	"path/filepath"
+	"runtime"
 	"sort"
 	"strings"
 )
@@ -21,11 +22,15 @@ type Resources struct {
 }
 
 // NewResources returns new unloaded resources
-func NewResources(filePath string) (res *Resources) {
+func NewResources(filePath string) (res *Resources, err error) {
 
 	// Get app name
 	var appName string
-	slice := strings.Split(filePath, "/")
+	separator := "/"
+	if runtime.GOOS == "windows" {
+		separator = `\`
+	}
+	slice := strings.Split(filePath, separator)
 	for _, p := range slice {
 		if strings.HasSuffix(p, ".apk") {
 			appName = p
@@ -33,17 +38,25 @@ func NewResources(filePath string) (res *Resources) {
 		}
 	}
 
-	return &Resources{
+	// Create resources
+	res = &Resources{
 		FilePath: filePath,
 		FileType: filepath.Base(filePath),
 		AppName:  appName,
 		Keys:     []string{},
 		Elements: make(map[string]Elementer),
 	}
+
+	// Load resources
+	if err := res.load(); err != nil {
+		return nil, err
+	}
+	return res, nil
+
 }
 
-// Load loads the resources from res.FilePath
-func (res *Resources) Load() (err error) {
+// load loads the resources from res.FilePath
+func (res *Resources) load() (err error) {
 
 	// Do XML integrity check first
 	err = res.CheckIntegrity()
@@ -138,12 +151,12 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 
 			// Filter general value rules
 			if rules, ok := fc.StringsValueRules["all"]; ok {
-				res.filterValue(rules, element.GetValue())
+				res.filterValue(rules, elementKey, element.GetValue())
 			}
 
 			// Filter application value rules
 			if rules, ok := fc.StringsValueRules[res.AppName]; ok {
-				res.filterValue(rules, element.GetValue())
+				res.filterValue(rules, elementKey, element.GetValue())
 			}
 
 		case FileTypeArrays:
@@ -155,6 +168,16 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 			// Filter application key rules
 			if rules, ok := fc.ArraysKeyRules[res.AppName]; ok {
 				res.filterKey(rules, elementKey)
+			}
+
+			// Filter general value rules
+			if rules, ok := fc.ArraysValueRules["all"]; ok {
+				res.filterItems(rules, elementKey, element.GetItems())
+			}
+
+			// Filter application value rules
+			if rules, ok := fc.ArraysValueRules[res.AppName]; ok {
+				res.filterItems(rules, elementKey, element.GetItems())
 			}
 
 		case FileTypePlurals:
@@ -192,22 +215,49 @@ func (res *Resources) filterKey(rules []FilterRules, elementKey string) {
 	}
 }
 
-func (res *Resources) filterValue(rules []FilterRules, elementValue string) {
+func (res *Resources) filterValue(rules []FilterRules, elementKey string, elementValue string) {
 	for _, rule := range rules {
 		switch rule.Mode {
 		case FilterModeSuffix:
 			if strings.HasSuffix(elementValue, rule.Match) {
-				delete(res.Elements, elementValue)
+				delete(res.Elements, elementKey)
+				return
 			}
 		case FilterModePrefix:
-			if strings.HasSuffix(elementValue, rule.Match) {
-				delete(res.Elements, elementValue)
+			if strings.HasPrefix(elementValue, rule.Match) {
+				delete(res.Elements, elementKey)
+				return
 			}
 		case FilterModeContains:
 			if strings.Contains(elementValue, rule.Match) {
-				delete(res.Elements, elementValue)
+				delete(res.Elements, elementKey)
+				return
 			}
 		default:
+		}
+	}
+}
+
+func (res *Resources) filterItems(rules []FilterRules, elementKey string, items []string) {
+	for _, rule := range rules {
+		for _, item := range items {
+			switch rule.Mode {
+			case FilterModeSuffix:
+				if strings.HasSuffix(item, rule.Match) {
+					delete(res.Elements, elementKey)
+					return
+				}
+			case FilterModePrefix:
+				if strings.HasPrefix(item, rule.Match) {
+					delete(res.Elements, elementKey)
+					return
+				}
+			case FilterModeContains:
+				if strings.Contains(item, rule.Match) {
+					delete(res.Elements, elementKey)
+					return
+				}
+			}
 		}
 	}
 }
