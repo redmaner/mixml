@@ -101,9 +101,6 @@ func NewArrays(base string) (bool, *ElementArrays) {
 			ea.items = append(ea.items, fixApostrophe(str))
 			continue
 		}
-		if strBuffer != "" {
-			strBuffer = strBuffer + "\n"
-		}
 		strBuffer = strBuffer + str
 	}
 
@@ -211,9 +208,6 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 			ep.items = append(ep.items, value)
 			ep.quantities = append(ep.quantities, quantity)
 			continue
-		}
-		if strBuffer != "" {
-			strBuffer = strBuffer + "\n"
 		}
 		strBuffer = strBuffer + str
 	}
