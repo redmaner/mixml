@@ -1,0 +1,35 @@
+strings_key_rules:
+  MiuiCamera.apk:
+    - match: _default
+      mode: suffix
+    - match: _value
+      mode: contains
+    - match: _entryvalue
+      mode: contains
+
+strings_value_rules:
+  all:
+    - match: '@string'
+      mode: prefix
+    - match: '@drawable'
+      mode: prefix
+    - match: '@color'
+      mode: prefix
+    - match: com.
+      mode: prefix
+
+arrays_key_rules:
+  all:
+    - match: _values
+      mode: suffix
+
+arrays_value_rules:
+  all:
+    - match: '@string'
+      mode: prefix
+    - match: '@drawable'
+      mode: prefix
+    - match: '@color'
+      mode: prefix
+    - match: com.
+      mode: prefix
