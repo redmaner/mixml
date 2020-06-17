@@ -28,11 +28,6 @@ func NewArrays(base string) (bool, *ElementArrays) {
 
 	var ea ElementArrays
 
-	// We do not parse empty strings
-	if base == "" {
-		return false, nil
-	}
-
 	// We remove comments
 	if strings.Contains(base, "<!--") {
 		return false, nil
@@ -41,7 +36,12 @@ func NewArrays(base string) (bool, *ElementArrays) {
 	var parsedFirstLine bool
 	var strBuffer string
 
+	// We do not parse empty arrays
 	base = trimSpace(base)
+	if base == "" {
+		return false, nil
+	}
+
 	scanner := NewElementScanner(bytes.NewBufferString(base))
 
 	for scanner.Scan() {
@@ -156,11 +156,6 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 
 	var ep ElementPlurals
 
-	// We do not parse empty strings
-	if base == "" {
-		return false, nil
-	}
-
 	// We remove comments
 	if strings.Contains(base, "<!--") {
 		return false, nil
@@ -169,7 +164,12 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 	var parsedFirstLine bool
 	var strBuffer string
 
+	// We do not parse empty plurals
 	base = trimSpace(base)
+	if base == "" {
+		return false, nil
+	}
+
 	scanner := NewElementScanner(bytes.NewBufferString(base))
 
 	for scanner.Scan() {
@@ -257,11 +257,6 @@ func NewStrings(base string) (bool, *ElementStrings) {
 
 	var es ElementStrings
 
-	// We do not parse empty strings
-	if base == "" {
-		return false, nil
-	}
-
 	// We remove comments
 	if strings.Contains(base, "<!--") {
 		return false, nil
@@ -269,6 +264,11 @@ func NewStrings(base string) (bool, *ElementStrings) {
 
 	// Trim spaces
 	base = trimSpace(base)
+
+	// We do not parse empty strings
+	if base == "" {
+		return false, nil
+	}
 
 	// Trim prefix
 	base = strings.TrimPrefix(base, "<string ")
