@@ -47,7 +47,7 @@ func main() {
 
 	switch args[1] {
 	case "format":
-		if err := cmdFormat.Parse(args); err != nil {
+		if err := cmdFormat.Parse(args[2:]); err != nil {
 			fmt.Println(err)
 			showHelp()
 		}
