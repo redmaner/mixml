@@ -52,8 +52,8 @@ func format() {
 	}
 
 	for _, v := range files {
-		res := miuires.NewResources(v)
-		if err := res.Load(); err != nil {
+		res, err := miuires.NewResources(v)
+		if err != nil {
 			fmt.Printf("An error occurred when loading %s: %v\n", v, err)
 			continue
 		}
