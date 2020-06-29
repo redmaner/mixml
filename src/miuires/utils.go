@@ -59,6 +59,8 @@ func fixApostrophe(base string) (fixed string) {
 	return fixed
 }
 
+// getElementParameter extracts elementer parameters, like the name of a string or
+// the quantity of a plural
 func getElementParameter(base string, parameter string) (value string) {
 	parameter = parameter + `="`
 	start := strings.Index(base, parameter)
@@ -72,6 +74,7 @@ func getElementParameter(base string, parameter string) (value string) {
 	return
 }
 
+// getElementValue extract the elemement value
 func getElementValue(base string, suffix string) (value string) {
 	startValue := strings.IndexByte(base, '>')
 	value = base[startValue+1:]
@@ -80,22 +83,16 @@ func getElementValue(base string, suffix string) (value string) {
 	return
 }
 
+// getPluralsItem extracts the value and quantity of a plural item
 func getPluralsItem(base string) (quantity string, value string) {
 	quantity = getElementParameter(base, "quantity")
 	value = getElementValue(base, "</item>")
 	return
 }
 
+// getStringsNameValue extract the name and value of strings
 func getStringsNameValue(base string) (name string, value string, formatted bool) {
-
-	// Remove formatted is false if present
 	formatted = strings.Contains(base, `formatted="false"`)
-	if formatted {
-		fb := strings.Index(base, `formatted="false"`)
-		base = base[0:fb] + base[fb+len(`formatted="false"`):]
-	}
-
-	// Extract the name and value
 	name = getElementParameter(base, "name")
 	value = getElementValue(base, "</string>")
 	return
