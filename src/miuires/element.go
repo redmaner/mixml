@@ -66,7 +66,7 @@ func NewArrays(base string) (bool, *ElementArrays) {
 			str = trimSpace(str)
 
 			// extract name
-			ea.name = getElementValue(str, "name")
+			ea.name = getElementParameter(str, "name")
 
 			// If array is empty we break out, otherwise we continue
 			if strings.Contains(str, "/>") {
