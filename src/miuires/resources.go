@@ -192,7 +192,6 @@ func (res *Resources) Filter(fc *FilterConfig) error {
 			}
 		}
 	}
-
 	return nil
 }
 
@@ -278,7 +277,8 @@ func (res *Resources) Write() error {
 	io.WriteString(f, fmt.Sprintf("<?xml version='1.0' encoding='UTF-8'?>\n"))
 
 	if res.Comment != "" {
-		io.WriteString(f, res.Comment)
+		comment := trimSpace(res.Comment) + "\n"
+		io.WriteString(f, comment)
 	}
 
 	io.WriteString(f, fmt.Sprintf("<resources>\n"))
