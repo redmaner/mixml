@@ -15,7 +15,7 @@ func trimSpace(base string) string {
 	}
 
 	// Trim tabs and spaces as prefixes
-	for len(base) > 0 && base[0] == '\t' || len(base) > 0 && base[0] == ' ' || len(base) > 0 && base[0] == '\r' || len(base) > 0 && base[0] == '\n' {
+	for len(base) > 0 && base[0] == '\t' || len(base) > 0 && base[0] == ' ' || len(base) > 0 && base[0] == '\r' || len(base) > 0 && base[0] == '\n' || len(base) > 0 && base[0] == '+' {
 		base = base[1:]
 	}
 
