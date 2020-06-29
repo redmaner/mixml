@@ -59,6 +59,48 @@ func fixApostrophe(base string) (fixed string) {
 	return fixed
 }
 
+func getElementParameter(base string, parameter string) (value string) {
+	parameter = parameter + `="`
+	start := strings.Index(base, parameter)
+	if start < 0 {
+		return ""
+	}
+
+	end := strings.IndexByte(base[start+len(parameter):], '"')
+	end += start + len(parameter)
+	value = strings.TrimPrefix(base[start:end], parameter)
+	return
+}
+
+func getElementValue(base string, suffix string) (value string) {
+	startValue := strings.IndexByte(base, '>')
+	value = base[startValue+1:]
+	value = strings.TrimSuffix(value, suffix)
+	value = fixApostrophe(value)
+	return
+}
+
+func getPluralsItem(base string) (quantity string, value string) {
+	quantity = getElementParameter(base, "quantity")
+	value = getElementValue(base, "</item>")
+	return
+}
+
+func getStringsNameValue(base string) (name string, value string, formatted bool) {
+
+	// Remove formatted is false if present
+	formatted = strings.Contains(base, `formatted="false"`)
+	if formatted {
+		fb := strings.Index(base, `formatted="false"`)
+		base = base[0:fb] + base[fb+len(`formatted="false"`):]
+	}
+
+	// Extract the name and value
+	name = getElementParameter(base, "name")
+	value = getElementValue(base, "</string>")
+	return
+}
+
 // CheckIntegrity checks basic XML integrity of strings.xml and arrays.xml
 func (res *Resources) CheckIntegrity() (err error) {
 

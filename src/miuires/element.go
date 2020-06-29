@@ -64,18 +64,14 @@ func NewArrays(base string) (bool, *ElementArrays) {
 
 			// Trim prefix and suffix
 			str = trimSpace(str)
-			str = strings.TrimPrefix(str, fmt.Sprintf(`<%s name="`, ea.form))
 
-			// Handle empty array
+			// extract name
+			ea.name = getElementValue(str, "name")
+
+			// If array is empty we break out, otherwise we continue
 			if strings.Contains(str, "/>") {
-				strSlice := strings.Split(str, `"`)
-				ea.name = strSlice[0]
 				return true, &ea
 			}
-
-			// Handle normal array
-			str = strings.TrimSuffix(str, `">`)
-			ea.name = str
 			continue
 		}
 
@@ -96,9 +92,7 @@ func NewArrays(base string) (bool, *ElementArrays) {
 			}
 			strBuffer = ""
 			str = trimSpace(str)
-			str = strings.TrimPrefix(str, "<item>")
-			str = strings.TrimSuffix(str, "</item>")
-			ea.items = append(ea.items, fixApostrophe(str))
+			ea.items = append(ea.items, getElementValue(str, "</item>"))
 			continue
 		}
 		strBuffer = strBuffer + str
@@ -180,9 +174,7 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 
 			// Trim prefix and suffix
 			str = trimSpace(str)
-			str = strings.TrimPrefix(str, `<plurals name="`)
-			str = strings.TrimSuffix(str, `">`)
-			ep.name = str
+			ep.name = getElementParameter(str, "name")
 			continue
 		}
 
@@ -198,13 +190,7 @@ func NewPlurals(base string) (bool, *ElementPlurals) {
 			}
 			strBuffer = ""
 			str = trimSpace(str)
-			str = strings.TrimPrefix(str, `<item quantity="`)
-			str = strings.TrimSuffix(str, "</item>")
-
-			strSlice := strings.Split(str, `">`)
-			quantity := strSlice[0]
-			value := fixApostrophe(strSlice[1])
-
+			quantity, value := getPluralsItem(str)
 			ep.items = append(ep.items, value)
 			ep.quantities = append(ep.quantities, quantity)
 			continue
@@ -281,20 +267,8 @@ func NewStrings(base string) (bool, *ElementStrings) {
 		return true, &es
 	}
 
-	// Trim suffix
-	base = strings.TrimSuffix(base, "</string>")
-
 	// Get the name and value
-	var baseSlice []string
-	switch {
-	case strings.Contains(base, ` formatted="false"`):
-		baseSlice = strings.Split(base, `" formatted="false">`)
-		es.formatted = true
-	default:
-		baseSlice = strings.Split(base, `">`)
-	}
-	es.name = strings.TrimPrefix(baseSlice[0], `name="`)
-	es.value = fixApostrophe(baseSlice[1])
+	es.name, es.value, es.formatted = getStringsNameValue(base)
 
 	// Determine if string needs to be formatted
 	if strings.Count(es.value, "%s") >= 2 {
